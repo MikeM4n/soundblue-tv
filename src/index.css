@@ -1,0 +1,103 @@
+@import 'tailwindcss';
+
+/*
+ * Paleta de SoundBlue: todo negro con azul rey. Cada color crea sus clases de Tailwind (bg-fondo,
+ * text-acento, hover:bg-tarjeta…) y una variable CSS (var(--color-fondo)…). Cámbialos aquí y se
+ * actualiza toda la app.
+ */
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --color-fondo: #000000; /* fondo principal */
+  --color-panel: #121212; /* paneles y barra lateral */
+  --color-tarjeta: #1a1a1a; /* tarjetas y filas al pasar el dedo o el mouse */
+  --color-elevado: #242424; /* elementos elevados: barra del reproductor, menús, diálogos */
+  --color-acento: #4169e1; /* azul rey: botones, play/pausa, progreso, íconos activos, favoritos, switches */
+  --color-acento-hover: #5b82f0;
+  --color-texto: #ffffff;
+  --color-texto-sec: #a7a7a7;
+
+  /* Derivados, para accesibilidad y estados: */
+  --color-acento-texto: #7c9cf5; /* azul para TEXTO (la canción actual); el azul rey como texto pequeño no llega a 4.5:1 */
+  --color-tarjeta-claro: #242424; /* hover de elementos que ya usan «tarjeta» de fondo (= elevado) */
+  --color-acento-oscuro: #2b4fc2; /* azul para texto sobre fondos claros (avisos), contraste 6.4:1 */
+
+  /*
+   * TV: el diseño de pantalla grande siempre (barra lateral, reproductor abajo…), aunque el navegador del televisor
+   * diga que mide 960 px de ancho. Todas las variantes md:/lg:/xl: quedan activas.
+   */
+  --breakpoint-sm: 0rem;
+  --breakpoint-md: 0rem;
+  --breakpoint-lg: 0rem;
+  --breakpoint-xl: 0rem;
+  --breakpoint-2xl: 0rem;
+}
+
+@layer base {
+  /*
+   * Para verse desde el sofá (10-foot UI): todos los tamaños de la app están en rem y crecen con el ancho de la
+   * pantalla. 960 px de ancho (lo que suelen decir los navegadores de TV en 1080p) = 15 px de base; en 4K o en un
+   * PC a 1920 px, lo mismo en proporción.
+   */
+  html {
+    font-size: calc(100vw / 64);
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  /* Sin «jalar para recargar» del navegador: los gestos hacia abajo son de la app (minimizar, cerrar). */
+  html,
+  body,
+  #root {
+    overscroll-behavior-y: none;
+  }
+
+  body {
+    background: var(--color-fondo);
+    color: var(--color-texto);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /*
+   * Foco del control remoto: borde azul brillante y un poco más grande, por encima de lo que tiene alrededor.
+   * :focus-visible solo aparece al moverse con las flechas (no al tocar con el mouse).
+   */
+  :focus-visible {
+    outline: 4px solid var(--color-acento);
+    outline-offset: 3px;
+  }
+  :where(a, button, input, select, [tabindex]):focus-visible {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 0 0 7px rgb(65 105 225 / 0.35);
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Margen de seguridad de los televisores (overscan): 5 % del alto y del ancho, para que nada quede cortado. */
+@utility tv-seguro {
+  padding: 5vh 5vw;
+}
+
+/* Barra de desplazamiento fina y discreta. */
+@utility scroll-fino {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.2) transparent;
+}
+
+/* Oculta la barra en carruseles horizontales (se siguen pudiendo desplazar). */
+@utility sin-scroll {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
